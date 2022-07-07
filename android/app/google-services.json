@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1036079621",
+    "project_id": "newzzie",
+    "storage_bucket": "newzzie.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1036079621:android:3cfbed22c6467ca1d4426c",
+        "android_client_info": {
+          "package_name": "com.MOo207.newzzie"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1036079621-l1cg2quo7irjo421obe3ii8mlne9ikbd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDByEgwW3QxPS2BqfzbcsyRpOdK2eJk0wU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1036079621-l1cg2quo7irjo421obe3ii8mlne9ikbd.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
