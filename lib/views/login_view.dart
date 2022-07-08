@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:newzzie/helper/validators.dart';
 import 'package:newzzie/helper/widgets.dart';
 import 'package:newzzie/services/auth_service.dart';
 import 'package:newzzie/views/homepage.dart';
@@ -40,17 +41,21 @@ class _LoginViewState extends State<LoginView> {
                           border: OutlineInputBorder(),
                           labelText: 'Email',
                         ),
+                        validator: (value)=> Validators.emailValidation(value),
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
                       ),
                     ),
                     Container(
                       padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-                      child: TextField(
+                      child: TextFormField(
                         obscureText: true,
                         controller: passwordController,
                         decoration: const InputDecoration(
                           border: OutlineInputBorder(),
                           labelText: 'Password',
                         ),
+                        validator: (value)=> Validators.passwordValidation(value),
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
                       ),
                     ),
                     TextButton(

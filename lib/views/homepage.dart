@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:newzzie/helper/data.dart';
 import 'package:newzzie/helper/widgets.dart';
@@ -6,6 +7,7 @@ import 'package:newzzie/models/categorie_model.dart';
 import 'package:newzzie/services/auth_service.dart';
 import 'package:newzzie/views/categorie_news.dart';
 import 'package:newzzie/views/login_view.dart';
+import 'package:newzzie/views/settings_view.dart';
 import '../helper/news.dart';
 
 class HomePage extends StatefulWidget {
@@ -19,7 +21,7 @@ class _HomePageState extends State<HomePage> {
   var newslist;
 
   List<CategorieModel> categories = List<CategorieModel>();
-
+  User currentUser;
   void getNews() async {
     News news = News();
     await news.getNews();
@@ -34,7 +36,7 @@ class _HomePageState extends State<HomePage> {
     _loading = true;
     // TODO: implement initState
     super.initState();
-
+    currentUser = FirebaseAuth.instance.currentUser;
     categories = getCategories();
     getNews();
   }
@@ -48,8 +50,8 @@ class _HomePageState extends State<HomePage> {
         child: ListView(
           children: <Widget>[
             UserAccountsDrawerHeader(
-              accountName: Text("NewzziE"),
-              accountEmail: Text(""),
+              accountName: Text("NewzziE User"),
+              accountEmail: Text(currentUser.email),
               currentAccountPicture: GestureDetector(
                 child: CircleAvatar(
                   backgroundColor: Colors.grey,
@@ -81,7 +83,7 @@ class _HomePageState extends State<HomePage> {
               leading: Icon(Icons.settings),
               onTap: () {
                 Navigator.pop(context);
-                // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Settings()));
+                Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsView()));
               },
             ),
             ListTile(
