@@ -1,12 +1,12 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:newzzie/helper/widgets.dart';
+import 'package:newzzie/widgets/widgets.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class ArticleView extends StatefulWidget {
 
-  final String postUrl;
+  final String? postUrl;
   ArticleView({@required this.postUrl});
 
   @override
@@ -19,7 +19,7 @@ class _ArticleViewState extends State<ArticleView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: myAppBar(true),
+      appBar: myAppBar(context, true),
       body: Container(
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:newzzie/helper/news.dart';
-import 'package:newzzie/helper/widgets.dart';
+import 'package:newzzie/models/article.dart';
+import 'package:newzzie/services/news_service.dart';
+import 'package:newzzie/widgets/news_tile.dart';
+import 'package:newzzie/widgets/widgets.dart';
 
 class CategoryNews extends StatefulWidget {
 
-  final String newsCategory;
+  final String? newsCategory;
 
   CategoryNews({this.newsCategory});
 
@@ -13,48 +15,50 @@ class CategoryNews extends StatefulWidget {
 }
 
 class _CategoryNewsState extends State<CategoryNews> {
-  var newslist;
-  bool _loading = true;
+  NewsCategoryService news = NewsCategoryService();
+ Future<List<Article>>? _newsCategoryFuture;
 
   @override
   void initState() {
-    getNews();
     // TODO: implement initState
     super.initState();
-  }
-
-  void getNews() async {
-    NewsForCategorie news = NewsForCategorie();
-    await news.getNewsForCategory(widget.newsCategory);
-    newslist = news.news;
-    setState(() {
-      _loading = false;
-    });
+    _newsCategoryFuture = news.getNewsForCategory(widget.newsCategory.toString());
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: myAppBar(true),
-      body: _loading ? Center(
-        child: CircularProgressIndicator(),
-      ) : SingleChildScrollView(
+      appBar: myAppBar(context, true),
+      body:SingleChildScrollView(
         child: Container(
             child: Container(
               margin: EdgeInsets.only(top: 16),
-              child: ListView.builder(
-                  itemCount: newslist.length,
-                  shrinkWrap: true,
-                  physics: ClampingScrollPhysics(),
-                  itemBuilder: (context, index) {
-                    return NewsTile(
-                      imgUrl: newslist[index].urlToImage ?? "",
-                      title: newslist[index].title ?? "",
-                      desc: newslist[index].description ?? "",
-                      content: newslist[index].content ?? "",
-                      posturl: newslist[index].articleUrl ?? "",
+              child: FutureBuilder<List<Article>>(
+                future: _newsCategoryFuture,
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                  return ListView.builder(
+                      itemCount: snapshot.data!.length,
+                      shrinkWrap: true,
+                      physics: ClampingScrollPhysics(),
+                      itemBuilder: (context, index) {
+                        return NewsTile(
+                          imgUrl: snapshot.data![index].urlToImage ?? "",
+                          title: snapshot.data![index].title ?? "",
+                          desc: snapshot.data![index].description ?? "",
+                          content: snapshot.data![index].content ?? "",
+                          posturl: snapshot.data![index].articleUrl ?? "",
+                        );
+                      });
+                  } else if (snapshot.hasError) {
+                    return Text("${snapshot.error}");
+                  } else {
+                    return Center(
+                      child: CircularProgressIndicator(),
                     );
-                  }),
+                  }
+                }
+              ),
             ),
         ),
       ),

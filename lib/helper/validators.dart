@@ -1,3 +1,5 @@
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 class Validators {
   Validators();
   static bool isEmail(String email) {
@@ -6,20 +8,20 @@ class Validators {
   static bool isPassword(String password) {
     return password.length >= 8;
   }
-  static emailValidation(value) {
+  static emailValidation(context , value) {
     if (value == null || value.isEmpty) {
-      return 'Please enter some text';
+      return AppLocalizations.of(context)!.email_required;
     } else if (!isEmail(value)) {
-      return 'Please enter a valid email';
+      return AppLocalizations.of(context)!.email_invalid;
     }
     return null;
   }
 
- static passwordValidation(value) {
+ static passwordValidation(context,value) {
     if (value == null || value.isEmpty) {
-      return 'Please enter some text';
+      return AppLocalizations.of(context)!.password_required;
     } else if (!isPassword(value)) {
-      return 'Please enter a valid password';
+      return AppLocalizations.of(context)!.password_length;
     }
     return null;
   }

@@ -1,30 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:newzzie/views/article_view.dart';
 
-Widget myAppBar(bool showBackButton) {
-  return AppBar(
-    iconTheme: showBackButton ? IconThemeData(color: Colors.black) : null,
-    title: Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        Text(
-          "New",
-          style: TextStyle(color: Colors.black87, fontWeight: FontWeight.w600),
-        ),
-        Text(
-          "zziE",
-          style:
-              TextStyle(color: Color(0xff44c2c7), fontWeight: FontWeight.w600),
-        )
-      ],
-    ),
-    backgroundColor: Colors.transparent,
-    elevation: 0.0,
-  );
-}
-
 class NewsTile extends StatelessWidget {
-  final String imgUrl, title, desc, content, posturl;
+  final String? imgUrl, title, desc, content, posturl;
 
   NewsTile(
       {this.imgUrl,
@@ -41,7 +19,7 @@ class NewsTile extends StatelessWidget {
             context,
             MaterialPageRoute(
                 builder: (context) => ArticleView(
-                      postUrl: posturl,
+                      postUrl: posturl ?? "",
                     )));
       },
       child: Container(
@@ -62,7 +40,9 @@ class NewsTile extends StatelessWidget {
                   ClipRRect(
                       borderRadius: BorderRadius.circular(6),
                       child: Image.network(
-                        imgUrl,
+                        imgUrl ??
+                            //placeholder network image
+                            "https://images.unsplash.com/photo-1518791841217-8f162f1e1131?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60",
                         height: 200,
                         width: MediaQuery.of(context).size.width,
                         fit: BoxFit.cover,
@@ -71,20 +51,23 @@ class NewsTile extends StatelessWidget {
                     height: 12,
                   ),
                   Text(
-                    title,
+                    title ?? "",
                     maxLines: 2,
-                    style: TextStyle(
-                        color: Colors.black87,
-                        fontSize: 20,
-                        fontWeight: FontWeight.w500),
+                    style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                      fontSize: 20,
+                        fontWeight: FontWeight.w500
+                    ),
                   ),
                   SizedBox(
                     height: 4,
                   ),
                   Text(
-                    desc,
+                    desc?? "",
                     maxLines: 2,
-                    style: TextStyle(color: Colors.black54, fontSize: 14),
+                    style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                      fontSize: 14,
+                        fontWeight: FontWeight.w500
+                    ),
                   )
                 ],
               ),

@@ -2,7 +2,7 @@ import 'package:newzzie/models/categorie_model.dart';
 
 List<CategorieModel> getCategories(){
 
-  List<CategorieModel> myCategories = List<CategorieModel>();
+  List<CategorieModel> myCategories = <CategorieModel>[];
   CategorieModel categorieModel;
 
   //1

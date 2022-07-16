@@ -1,47 +1,70 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:newzzie/helper/validators.dart';
-import 'package:newzzie/helper/widgets.dart';
 import 'package:newzzie/services/auth_service.dart';
 import 'package:newzzie/views/homepage.dart';
+import 'package:newzzie/views/preferences_view.dart';
 import 'package:newzzie/views/signup_view.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:newzzie/widgets/widgets.dart';
 
 class LoginView extends StatefulWidget {
-  const LoginView({Key key}) : super(key: key);
+  const LoginView({Key? key}) : super(key: key);
 
   @override
   State<LoginView> createState() => _LoginViewState();
 }
 
 class _LoginViewState extends State<LoginView> {
-  final _formKey = GlobalKey<FormState>();
   AuthService _authService = AuthService();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  bool isLoading = false;
+  // form key for validating the form
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: myAppBar(false),
+        appBar: myAppBar(context, false),
         body: SingleChildScrollView(
           child: Column(
             children: <Widget>[
+              Row(
+                children: [
+                  // user preference button
+                  IconButton(
+                    icon: Icon(Icons.settings),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => PreferencesPage(),
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
               // logo of the app
               Image.asset(
                 'assets/icons/news_icon.png',
                 height: 200,
               ),
               Form(
+                key: _formKey,
                 child: Column(
                   children: <Widget>[
                     Container(
                       padding: const EdgeInsets.all(10),
                       child: TextFormField(
                         controller: emailController,
-                        decoration: const InputDecoration(
+                        decoration: InputDecoration(
                           border: OutlineInputBorder(),
-                          labelText: 'Email',
+                          labelText: AppLocalizations.of(context)!.email,
                         ),
-                        validator: (value)=> Validators.emailValidation(value),
+                        validator: (value) =>
+                            Validators.emailValidation(context, value),
                         autovalidateMode: AutovalidateMode.onUserInteraction,
                       ),
                     ),
@@ -50,11 +73,12 @@ class _LoginViewState extends State<LoginView> {
                       child: TextFormField(
                         obscureText: true,
                         controller: passwordController,
-                        decoration: const InputDecoration(
+                        decoration: InputDecoration(
                           border: OutlineInputBorder(),
-                          labelText: 'Password',
+                          labelText: AppLocalizations.of(context)!.password,
                         ),
-                        validator: (value)=> Validators.passwordValidation(value),
+                        validator: (value) =>
+                            Validators.passwordValidation(context, value),
                         autovalidateMode: AutovalidateMode.onUserInteraction,
                       ),
                     ),
@@ -62,8 +86,12 @@ class _LoginViewState extends State<LoginView> {
                       onPressed: () {
                         //forgot password screen
                       },
-                      child: const Text(
-                        'Forgot Password',
+                      child: Text(
+                        AppLocalizations.of(context)!.forgot_password,
+                        style:
+                            Theme.of(context).textTheme.titleMedium!.copyWith(
+                                  color: Color(0xFF44c2c7),
+                                ),
                       ),
                     ),
                   ],
@@ -76,18 +104,60 @@ class _LoginViewState extends State<LoginView> {
                       height: 50,
                       padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                       child: ElevatedButton(
-                        child: const Text('Login'),
+                        child: isLoading
+                            ? CircularProgressIndicator()
+                            : Text(AppLocalizations.of(context)!.sign_in,
+                                style: Theme.of(context).textTheme.button),
                         onPressed: () async {
-                          var user =
-                              await _authService.signInWithEmailAndPassword(
-                            emailController.text.trim(),
-                            passwordController.text.trim(),
-                          );
-                          if (user != null) {
-                            Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => HomePage()));
+                          if (_formKey.currentState!.validate()) {
+                            setState(() {
+                              isLoading = true;
+                            });
+                            try {
+                              var userEitherException =
+                                  await _authService.signInWithEmailAndPassword(
+                                emailController.text.trim(),
+                                passwordController.text.trim(),
+                              );
+                              // if user is subtype of user, or firebaseauthexception is thrown, then show error message
+                              if (userEitherException is User) {
+                                Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => HomePage()));
+                              }
+
+                              if (userEitherException
+                                  is String) {
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(SnackBar(
+                                  content: Text(userEitherException.toString()),
+                                  duration: Duration(seconds: 2),
+                                ));
+                              }
+                              setState(() {
+                                isLoading = false;
+                              });
+                            } catch (e) {
+                              // show snackbar with error message
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(SnackBar(
+                                content: Text(e.toString()),
+                                duration: Duration(seconds: 2),
+                              ));
+                              setState(() {
+                                isLoading = false;
+                              });
+                            }
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text(AppLocalizations.of(context)!
+                                  .complete_all_fields),
+                              duration: Duration(seconds: 2),
+                            ));
+                            setState(() {
+                              isLoading = false;
+                            });
                           }
                         },
                       )),
@@ -95,11 +165,14 @@ class _LoginViewState extends State<LoginView> {
               ]),
               Row(
                 children: <Widget>[
-                  const Text('Does not have account?'),
+                  Text(AppLocalizations.of(context)!.dont_have_account,
+                      style: Theme.of(context).textTheme.titleLarge),
                   TextButton(
-                    child: const Text(
-                      'create one!',
-                      style: TextStyle(fontSize: 18),
+                    child: Text(
+                      AppLocalizations.of(context)!.create_one,
+                      style: TextStyle(
+                          fontSize:
+                              Theme.of(context).textTheme.titleLarge!.fontSize),
                     ),
                     onPressed: () => Navigator.push(context,
                         MaterialPageRoute(builder: (context) => SignupView())),

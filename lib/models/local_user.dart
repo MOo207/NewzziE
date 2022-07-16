@@ -24,17 +24,17 @@ class LocalUser {
         @required this.uid,
     });
 
-    final String displayName;
-    final String email;
-    final String emailVerified;
-    final String isAnonymous;
-    final String metadata;
-    final String phoneNumber;
-    final String photoUrl;
-    final String providerData;
-    final String refreshToken;
-    final String tenantId;
-    final String uid;
+    final String? displayName;
+    final String? email;
+    final String? emailVerified;
+    final String? isAnonymous;
+    final String? metadata;
+    final String? phoneNumber;
+    final String? photoUrl;
+    final String? providerData;
+    final String? refreshToken;
+    final String? tenantId;
+    final String? uid;
 
     factory LocalUser.fromJson(Map<String, dynamic> json) => LocalUser(
         displayName: json["displayName"] == null ? null : json["displayName"],

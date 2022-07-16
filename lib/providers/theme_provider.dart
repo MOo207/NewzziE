@@ -2,24 +2,34 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+const primaryConol = Color(0xFF44c2c7);
 
 class ThemeProvider with ChangeNotifier {
-  ThemeMode themeMode = ThemeMode.system;
+  ThemeMode? _themeMode;
+   ThemeMode? get themeMode => _themeMode;
+
+    ThemeProvider(this._themeMode);
+
+   
 
   bool get isDarkMode {
-    if (themeMode == ThemeMode.system) {
+    if (_themeMode == ThemeMode.system) {
       final brightness = SchedulerBinding.instance.window.platformBrightness;
       return brightness == Brightness.dark;
     } else {
-      return themeMode == ThemeMode.dark;
+      return _themeMode == ThemeMode.dark;
     }
   }
 
-  void toggleTheme(bool isOn) {
-    themeMode = isOn ? ThemeMode.dark : ThemeMode.light;
+  void toggleTheme(bool isOn) async{
+    _themeMode = isOn ? ThemeMode.dark : ThemeMode.light;
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool("isDark", isOn);
     notifyListeners();
   }
-}
+  }
 
 Map<int, Color> blackSwatchColorMap = {
   50: Color.fromRGBO(32, 32, 32, .1),
@@ -52,39 +62,185 @@ MaterialColor whiteSwatch = MaterialColor(0xFFF7F7F7, whiteSwatchColorMap);
 
 class MyThemes {
   static final darkTheme = ThemeData(
-    primaryColor: Color(0xFF44c2c7),
+    appBarTheme: AppBarTheme(
+      color: Colors.transparent,
+      iconTheme: IconThemeData(color: Colors.white),
+    ),
+    primaryColor: primaryConol,
+    textTheme: TextTheme(
+      headline1: TextStyle(
+        fontSize: 24,
+        fontWeight: FontWeight.w600,
+        color: Colors.white,
+      ),
+      headline2: TextStyle(
+        fontSize: 22,
+        fontWeight: FontWeight.w600,
+        color: Colors.white,
+      ),
+      headline3: TextStyle(
+        fontSize: 20,
+        fontWeight: FontWeight.w600,
+        color: Colors.white,
+      ),
+      headline4: TextStyle(
+        fontSize: 18,
+        fontWeight: FontWeight.w600,
+        color: Colors.white,
+      ),
+      headline5: TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.w600,
+        color: Colors.white,
+      ),
+      headline6: TextStyle(
+        fontSize: 14,
+        fontWeight: FontWeight.w600,
+        color: Colors.white,
+      ),
+      subtitle1: TextStyle(
+        fontSize: 12,
+        fontWeight: FontWeight.w600,
+        color: Colors.white,
+      ),
+      subtitle2: TextStyle(
+        fontSize: 10,
+        fontWeight: FontWeight.w600,
+        color: Colors.white,
+      ),
+      bodyText1: TextStyle(
+        fontSize: 12,
+        fontWeight: FontWeight.w600,
+        color: Colors.white,
+      ),
+      bodyText2: TextStyle(
+        fontSize: 10,
+        fontWeight: FontWeight.w600,
+        color: Colors.white,
+      ),
+      caption: TextStyle(
+        fontSize: 8,
+        fontWeight: FontWeight.w600,
+        color: Colors.white,
+      ),
+      button: TextStyle(
+        fontSize: 12,
+        fontWeight: FontWeight.w600,
+        color: Colors.white,
+      ),
+      overline: TextStyle(
+        fontSize: 10,
+      ),
+    ),
     brightness: Brightness.dark,
-    dividerColor: Colors.black12,
     colorScheme: ColorScheme.fromSwatch(
       primarySwatch: whiteSwatch,
       brightness: Brightness.dark,
     ),
-    iconTheme: IconThemeData(color: whiteSwatch),
-    primaryIconTheme: IconThemeData(color: whiteSwatch),
-    elevatedButtonTheme: ElevatedButtonThemeData(
-      style: ElevatedButton.styleFrom(
-        primary: Color(0xFF44c2c7),
+    textButtonTheme: TextButtonThemeData(
+      style: TextButton.styleFrom(
+        primary: primaryConol,
       ),
     ),
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        primary: primaryConol,
+      ),
+    ),
+    iconTheme: IconThemeData(color: whiteSwatch),
+    primaryIconTheme: IconThemeData(color: whiteSwatch),
   );
 
   ThemeData getDark() => darkTheme;
 
   static final lightTheme = ThemeData(
-      primaryColor: Color(0xFF44c2c7),
-      brightness: Brightness.light,
-      dividerColor: Colors.white54,
-      colorScheme: ColorScheme.fromSwatch(
-        primarySwatch: blackSwatch,
-        brightness: Brightness.light,
+    appBarTheme: AppBarTheme(
+      color: Colors.transparent,
+      iconTheme: IconThemeData(color: Colors.black),
+    ),
+    textTheme: TextTheme(
+      headline1: TextStyle(
+        fontSize: 24,
+        fontWeight: FontWeight.w600,
+        color: Colors.black,
       ),
-      iconTheme: IconThemeData(color: blackSwatch),
-      textButtonTheme: TextButtonThemeData(
-          style: ButtonStyle(
-              overlayColor:
-                  MaterialStateColor.resolveWith((states) => Colors.grey),
-              backgroundColor: MaterialStateProperty.all(blackSwatch),
-              foregroundColor: MaterialStateProperty.all(whiteSwatch))));
-
+      headline2: TextStyle(
+        fontSize: 22,
+        fontWeight: FontWeight.w600,
+        color: Colors.black,
+      ),
+      headline3: TextStyle(
+        fontSize: 20,
+        fontWeight: FontWeight.w600,
+        color: Colors.black,
+      ),
+      headline4: TextStyle(
+        fontSize: 18,
+        fontWeight: FontWeight.w600,
+        color: Colors.black,
+      ),
+      headline5: TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.w600,
+        color: Colors.black,
+      ),
+      headline6: TextStyle(
+        fontSize: 14,
+        fontWeight: FontWeight.w600,
+        color: Colors.black,
+      ),
+      subtitle1: TextStyle(
+        fontSize: 12,
+        fontWeight: FontWeight.w600,
+        color: Colors.black,
+      ),
+      subtitle2: TextStyle(
+        fontSize: 10,
+        fontWeight: FontWeight.w600,
+        color: Colors.black,
+      ),
+      bodyText1: TextStyle(
+        fontSize: 12,
+        fontWeight: FontWeight.w600,
+        color: Colors.black,
+      ),
+      bodyText2: TextStyle(
+        fontSize: 10,
+        fontWeight: FontWeight.w600,
+        color: Colors.black,
+      ),
+      caption: TextStyle(
+        fontSize: 8,
+        fontWeight: FontWeight.w600,
+        color: Colors.black,
+      ),
+      button: TextStyle(
+        fontSize: 14,
+        fontWeight: FontWeight.w600,
+        color: Colors.black,
+      ),
+      overline: TextStyle(
+        fontSize: 10,
+      ),
+    ),
+    primaryColor: primaryConol,
+    brightness: Brightness.light,
+    dividerColor: Colors.white54,
+    colorScheme: ColorScheme.fromSwatch(
+      primarySwatch: blackSwatch,
+      brightness: Brightness.light,
+    ),
+    textButtonTheme: TextButtonThemeData(
+      style: TextButton.styleFrom(
+        primary: primaryConol,
+      ),
+    ),
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        primary: primaryConol,
+      ),
+    ),
+    iconTheme: IconThemeData(color: Colors.black),
+  );
   ThemeData getLight() => lightTheme;
 }
